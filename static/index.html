@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/static/css/login.css">
+    <link rel="stylesheet" href="/static/css/frame.css">
     <link rel="icon" href="/static/favicon.ico">
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
@@ -12,9 +12,11 @@
 
 <body>
 <div class="login">
-    <h1>CoCo 众裁中心</h1>
-    <form action="/home/" enctype="multipart/form-data" method="post">
-        <input name="username" type="username" id="username" placeholder="账号">
+    <h1 class="central-title">CoCo 众裁中心</h1>
+    <form class="login-form">
+        <label for="username"></label>
+        <input name="username" id="username" placeholder="账号">
+        <label for="password"></label>
         <input name="password" type="password" id="password" placeholder="密码">
     </form>
     <button id="submit" onclick="getToken()">登录</button>

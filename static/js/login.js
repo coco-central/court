@@ -39,8 +39,7 @@ login.addEventListener('mouseleave', function (e) {
 
         if (passTime < 500) {
             setTimeout(mouseleave, 500 - passTime) //已经经过的时间就不要了
-        }
-        else {
+        } else {
             mouseleave()
         }
     }
@@ -58,26 +57,26 @@ login.addEventListener('mouseleave', function (e) {
         //注意：因为要等到动画结束，所以要给个定时器
         setTimeout(function () {
             login.removeChild(span)
-            isIn = true //当我们执行完鼠标离开事件里的程序，才再次打开
+            isIn = true
         }, 500)
     }
 })
 
 function getToken() {
-    username = document.getElementById('username').value;
-    password = document.getElementById('password').value;
-    var request = new XMLHttpRequest();
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
+    const request = new XMLHttpRequest();
     request.open('GET', '/token/?' + 'username=' + username + '&' + 'password=' + password, true);
     request.send();
 
-    setTimeout(Login,999);
+    setTimeout(Login, 999);
 }
 
 function getCookie(objName) {
-    var arrStr = document.cookie.split('; ');
-    for (var i = 0; i < arrStr.length; i++) {
-        var temp = arrStr[i].split('=');
-        if (temp[0] == objName) {
+    const arrStr = document.cookie.split('; ');
+    for (let i = 0; i < arrStr.length; i++) {
+        let temp = arrStr[i].split('=');
+        if (temp[0] === objName) {
             return unescape(temp[1]);
         }
     }
@@ -86,18 +85,18 @@ function getCookie(objName) {
 
 function Login() {
     // 创建一个 form
-    var form1 = document.createElement("form");
+    let form1 = document.createElement("form");
     // 添加到 body 中
     document.body.appendChild(form1);
     // 创建一个输入
-    var input1 = document.createElement("input");
+    const input1 = document.createElement("input");
     input1.type = "text";
     input1.name = "identity";
     input1.value = getCookie('id');
     console.log(input1.value);
     form1.appendChild(input1);
     // 创建一个输入
-    var input2 = document.createElement("input");
+    const input2 = document.createElement("input");
     input2.type = "text";
     input2.name = "token";
     input2.value = getCookie('token');
@@ -105,7 +104,7 @@ function Login() {
     form1.appendChild(input2);
     // form 的提交方式
     form1.method = "POST";
-    form1.action = "/login/";
+    form1.action = "/hall/";
     form1.enctype = 'multipart/form-data';
     // 对该 form 执行提交
     form1.submit();
@@ -113,8 +112,6 @@ function Login() {
     document.body.removeChild(form1);
 }
 
-console.log(document.cookie);
-
-if (document.cookie != "") {
+if (document.cookie !== "") {
     setTimeout(Login, 500);
 }

@@ -1,18 +1,26 @@
 import random
 import string
+import time
 from platform import system
 
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.templating import Jinja2Templates
 from uvicorn import run
 
 from main.codemao import login
+from main.core import Court, Event, Vote, Ballot
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 tokens = {}
+
+court = Court()
+court.events.append(Event("Test", time.time(), 'None'))
+
+template = Jinja2Templates(directory='static')
 
 
 @app.get('/')
@@ -40,17 +48,17 @@ async def get_token(username: str, password: str):
         return response
 
 
-@app.post('/login/')
-async def post_login(identity: str = Form(...), token: str = Form(...)):
+@app.post('/hall/')
+async def post_login(request: Request, identity: str = Form(...), token: str = Form(...)):
     print('ask', identity, token)
-    print(tokens)
 
     def yes():
         print('yes')
-        file = open("static/home.html", 'r', encoding='utf-8')
-        text = file.read()
-        file.close()
-        return HTMLResponse(text)
+        context = {
+            'request': request,
+            'number': court.number()
+        }
+        return template.TemplateResponse(name='hall.html', context=context)
 
     def no():
         print('no')

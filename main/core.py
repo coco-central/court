@@ -12,7 +12,7 @@ class Ballot:
 
 
 class Vote:
-    def __init__(self, name: str, time_stamp: int):
+    def __init__(self, name: str, time_stamp: float):
         self.object = name
         self.time = time_stamp
         self.ballots: List[Ballot] = []
@@ -99,7 +99,7 @@ class Vote:
 
 
 class Event:
-    def __init__(self, title: str, time_stamp: int, content: str):
+    def __init__(self, title: str, time_stamp: float, content: str):
         self.title = title
         self.time = time_stamp
         self.content = content
@@ -111,9 +111,5 @@ class Court:
     def __init__(self):
         self.events: List[Event] = []
 
-    def html(self):
-        template = """
-        <div class="card">
-            
-        </div>
-        """
+    def number(self):
+        return len(self.events)

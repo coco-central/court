@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="/static/css/login.css">
+    <link rel="stylesheet" href="/static/css/frame.css">
     <link rel="icon" href="/static/favicon.ico">
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
@@ -12,7 +12,19 @@
 
 <body>
 <script>
-    function delCookie() { var cookies = document.cookie.match(/[^ =;]+(?=\=)/g); if (cookies != null) for (var i = 0; i < cookies.length; i++) { try { document.cookie = cookies[i] + "=0;expires=" + new Date().toGMTString() + ";path=/"; } catch (e) { alert("error"); } } };
+    function delCookie() {
+        let cookies;
+        cookies = document.cookie.match(/[^ =;]+(?=\=)/g);
+        if (cookies != null) {
+            for (let i = 0; i < cookies.length; i++) {
+                try {
+                    document.cookie = cookies[i] + "=0;expires=" + new Date().toGMTString() + ";path=/";
+                } catch (e) {
+                    alert("error");
+                }
+            }
+        }
+    }
     delCookie();
     window.location.href = "/";
 </script>
