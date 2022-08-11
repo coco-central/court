@@ -77,7 +77,7 @@ function getCookie(objName) {
     for (let i = 0; i < arrStr.length; i++) {
         let temp = arrStr[i].split('=');
         if (temp[0] === objName) {
-            return unescape(temp[1]);
+            return decodeURI(temp[1]);
         }
     }
     return '';

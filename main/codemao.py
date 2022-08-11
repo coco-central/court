@@ -1,8 +1,8 @@
+import json
 from typing import Optional
 
-import requests
-import json
 import bs4
+import requests
 
 headers = {
     "Content-Type": "application/json",
