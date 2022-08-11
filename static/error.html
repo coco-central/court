@@ -11,6 +11,11 @@
 </head>
 
 <body>
+<script>
+    function delCookie() { var cookies = document.cookie.match(/[^ =;]+(?=\=)/g); if (cookies != null) for (var i = 0; i < cookies.length; i++) { try { document.cookie = cookies[i] + "=0;expires=" + new Date().toGMTString() + ";path=/"; } catch (e) { alert("error"); } } };
+    delCookie();
+    window.location.href = "/";
+</script>
 
 </body>
 

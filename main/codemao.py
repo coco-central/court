@@ -1,3 +1,5 @@
+from typing import Optional
+
 import requests
 import json
 import bs4
@@ -8,7 +10,7 @@ headers = {
 }
 
 
-def login(username: int, password: str) -> bool:
+def login(username: str, password: str) -> Optional[int]:
     def pid():
         res = requests.get('https://shequ.codemao.cn', headers=headers)
         soup = bs4.BeautifulSoup(res.text, 'html.parser')
@@ -22,4 +24,8 @@ def login(username: int, password: str) -> bool:
                               'pid': pid()
                           }),
                           headers=headers).text
-    return 'auth' in json.loads(value).keys()
+    if 'auth' in json.loads(value).keys():
+        return json.loads(value)['user_info']['id']
+
+    else:
+        return None
