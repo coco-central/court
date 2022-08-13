@@ -11,22 +11,23 @@ headers = {
 }
 
 
-def login(username: str, password: str) -> Optional[int]:
-    def pid():
-        res = requests.get('https://shequ.codemao.cn', headers=headers)
-        soup = bs4.BeautifulSoup(res.text, 'html.parser')
-        data = json.loads(soup.find_all("script")[0].string.split("=")[1])
-        return data['pid']
+def login(username: str, password: str) -> Optional[str]:
+    """
+    编程猫登录
+    :param username: 向服务器请求的用户名
+    :param password: 向服务器请求的密码
+    :return: 如果成功返回id，失败返回 None
+    """
 
     value = requests.post(url="https://api.codemao.cn/tiger/v3/web/accounts/login",
                           data=json.dumps({
                               'identity': username,
                               'password': password,
-                              'pid': pid()
+                              'pid': '7KeVbBdw'
                           }),
                           headers=headers).text
     if 'auth' in json.loads(value).keys():
-        return json.loads(value)['user_info']['id']
+        return str(json.loads(value)['user_info']['id'])
 
     else:
         return None

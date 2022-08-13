@@ -16,7 +16,6 @@ body {
 }
 
 .login {
-    /* 超出部分隐藏 */
     overflow: hidden;
     position: relative;
     display: flex;
@@ -51,7 +50,7 @@ body {
 #username, #password {
     width: 200px;
     height: 40px;
-    background-color: transparent;
+    background-color: #00000000;
     border: none;
     border-bottom: 2px solid #7820f3;
     padding: 0;
@@ -67,6 +66,10 @@ body {
 #username::placeholder, #password::placeholder {
     font-size: 16px;
     color: #80778a;
+}
+
+#username:-webkit-autofill, #password:-webkit-autofill {
+    background-color: #00000000;
 }
 
 #submit {
@@ -88,13 +91,10 @@ span {
     width: 0;
     height: 0;
     background-color: #f4edfe;
-    /* 鼠标居中 */
     transform: translate(-50%, -50%);
-    /* 圆的形式展开 */
     border-radius: 50%;
 }
 
-/* 鼠标进入 login 时的动画 */
 @keyframes in {
     0% {
         width: 0;
@@ -107,7 +107,6 @@ span {
     }
 }
 
-/* 鼠标离开 login 时的动画 */
 @keyframes out {
     0% {
         width: 1200px;
@@ -121,6 +120,8 @@ span {
 }
 
 .container {
+    position: absolute;
+    top: 0;
     width: 100%;
     max-width: 500px;
 }

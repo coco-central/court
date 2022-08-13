@@ -1,42 +1,31 @@
-//获取 login
+// 动态效果
 let login = document.querySelector('.login')
-
 let span
 let inTime, outTime
-let isIn = true //默认开关 打开
+let isIn = true
 let isOut
 
-//鼠标进入事件
 login.addEventListener('mouseenter', function (e) {
-    isOut = false //预先关闭，若不进入if语句，则不能进入鼠标离开事件里的 if
+    isOut = false
     if (isIn) {
         inTime = new Date().getTime()
-
-        //生成 span 元素并添加进 login 的末尾
         span = document.createElement('span')
         login.appendChild(span)
-
-        //span 去使用 in动画
         span.style.animation = 'in .5s ease-out forwards'
-
-        //计算 top 和 left 值，跟踪鼠标位置
         let top = e.clientY - e.target.offsetTop
         let left = e.clientX - e.target.offsetLeft
-
         span.style.top = top + 'px'
         span.style.left = left + 'px'
-
-        isIn = false //当我们执行完程序后，关闭
-        isOut = true //当我们执行完里面的程序，再打开
+        isIn = false
+        isOut = true
     }
 
 })
-//鼠标离开事件
+
 login.addEventListener('mouseleave', function (e) {
     if (isOut) {
         outTime = new Date().getTime()
         let passTime = outTime - inTime
-
         if (passTime < 500) {
             setTimeout(mouseleave, 500 - passTime) //已经经过的时间就不要了
         } else {
@@ -46,15 +35,10 @@ login.addEventListener('mouseleave', function (e) {
 
     function mouseleave() {
         span.style.animation = 'out .5s ease-out forwards'
-
-        //计算 top 和 left 值，跟踪鼠标位置
         let top = e.clientY - e.target.offsetTop
         let left = e.clientX - e.target.offsetLeft
-
         span.style.top = top + 'px'
         span.style.left = left + 'px'
-
-        //注意：因为要等到动画结束，所以要给个定时器
         setTimeout(function () {
             login.removeChild(span)
             isIn = true
@@ -62,16 +46,7 @@ login.addEventListener('mouseleave', function (e) {
     }
 })
 
-function getToken() {
-    let username = document.getElementById('username').value;
-    let password = document.getElementById('password').value;
-    const request = new XMLHttpRequest();
-    request.open('GET', '/token/?' + 'username=' + username + '&' + 'password=' + password, true);
-    request.send();
-
-    setTimeout(Login, 999);
-}
-
+// 获取Cookie
 function getCookie(objName) {
     const arrStr = document.cookie.split('; ');
     for (let i = 0; i < arrStr.length; i++) {
@@ -83,35 +58,53 @@ function getCookie(objName) {
     return '';
 }
 
-function Login() {
-    // 创建一个 form
-    let form1 = document.createElement("form");
-    // 添加到 body 中
-    document.body.appendChild(form1);
-    // 创建一个输入
-    const input1 = document.createElement("input");
-    input1.type = "text";
-    input1.name = "identity";
-    input1.value = getCookie('id');
-    console.log(input1.value);
-    form1.appendChild(input1);
-    // 创建一个输入
-    const input2 = document.createElement("input");
-    input2.type = "text";
-    input2.name = "token";
-    input2.value = getCookie('token');
-    // 将该输入框插入到 form 中
-    form1.appendChild(input2);
-    // form 的提交方式
-    form1.method = "POST";
-    form1.action = "/hall/";
-    form1.enctype = 'multipart/form-data';
-    // 对该 form 执行提交
-    form1.submit();
-    // 删除该 form
-    document.body.removeChild(form1);
+// 清空Cookie
+function delCookie() {
+    let cookies;
+    cookies = document.cookie.match(/[^ =;]+(?=)/g);
+    if (cookies != null)
+        for (let i = 0; i < cookies.length; i++)
+            document.cookie = cookies[i] + "=0;expires=" + new Date().toGMTString() + ";path=/";
 }
 
+// 登录：获取Token
+function getToken() {
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
+    const request = new XMLHttpRequest();
+    request.open('GET', '/token/?' + 'username=' + username + '&' + 'password=' + password, true);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200 || request.status === 304) {
+                console.log(request.response);
+                postLogin();
+            }
+        }
+    }
+    request.send();
+}
+
+// 登录：发送post
+function postLogin() {
+    const request = new XMLHttpRequest();
+    request.open('POST', '/hall/', true);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200 || request.status === 304) {
+                console.log(request.response);
+                if (request.response === 'failed') {
+                    delCookie();
+                } else {
+                    document.body.innerHTML = request.response;
+                }
+            }
+        }
+    }
+    request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    request.send('identity=' + getCookie('id') + '&token=' + getCookie('token'));
+}
+
+// 记住登录状态，自动登录
 if (document.cookie !== "") {
-    setTimeout(Login, 500);
+    postLogin();
 }

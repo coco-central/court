@@ -1,27 +1,47 @@
 import time
 from typing import Optional, List
+from string import Template
 
 official_list = []
 central_list = []
 
 
 class Ballot:
-    def __init__(self, identity: int, value: Optional[bool]) -> None:
+    def __init__(self, identity: int, value: Optional[bool]):
+        """
+        票
+        :param identity: 投票者id
+        :param value: 投票值(True/False/None)
+        """
         self.identity = identity
         self.value = value
 
 
 class Vote:
     def __init__(self, name: str, time_stamp: float):
+        """
+        投票
+        :param name: 投票对象
+        :param time_stamp: 投票开始时间戳
+        """
         self.object = name
         self.time = time_stamp
         self.ballots: List[Ballot] = []
         self.statistics = [[], [], []]
 
     def append(self, ballot: Ballot) -> None:
+        """
+        增添票
+        :param ballot: 票
+        :return: None
+        """
         self.ballots.append(ballot)
 
     def sort(self) -> None:
+        """
+        分出官方票，中控台票，群员票
+        :return: None
+        """
         official, central, common = [], [], []
         for ballot in self.ballots:
             if ballot in official_list:
@@ -34,12 +54,23 @@ class Vote:
 
     @staticmethod
     def __judge(penalize: int, release: int) -> Optional[bool]:
+        """
+        判断当前投票结果
+        :param penalize: 投处罚的人数
+        :param release: 投放行的人数
+        :return: True | False | None
+        """
         if penalize == release == 0:
             return None
         else:
             return penalize > release
 
     def __value(self, key: int) -> list:
+        """
+        获取投票的值
+        :param key: 选择官方(0)，中控台(1)，群员(2)
+        :return: 投票结果条
+        """
         penalize, waiver, release = 0, 0, 0
         for ballot in self.statistics[key]:
             if ballot.value is None:
@@ -52,7 +83,11 @@ class Vote:
         result = self.__judge(penalize, release)
         return [penalize, waiver, release, result]
 
-    def result(self):
+    def result(self) -> dict:
+        """
+        返回总的投票结果
+        :return: 一个字典，包含数据来源(source)，投票阶段(state)，投票数据(data)
+        """
         official = self.__value(0)
         central = self.__value(1)
         common = self.__value(2)
@@ -100,6 +135,12 @@ class Vote:
 
 class Event:
     def __init__(self, title: str, time_stamp: float, content: str):
+        """
+        发生的事件
+        :param title: 事件名称
+        :param time_stamp: 时间戳
+        :param content: 事件内容
+        """
         self.title = title
         self.time = time_stamp
         self.content = content
@@ -109,7 +150,34 @@ class Event:
 
 class Court:
     def __init__(self):
+        """
+        众裁总数据类
+        """
         self.events: List[Event] = []
 
-    def number(self):
+    def number(self) -> int:
+        """
+        返回当前事件数
+        :return: 事件数
+        """
         return len(self.events)
+
+    def html(self) -> str:
+        container = """
+        <div class="container">
+            <h1 class="main-title">
+                中控台众裁投票 ($number)
+            </h1>
+            $events
+        </div>
+        """
+        card = """
+            <a class="events">
+                <div class="event-title">$title</div>
+            </a>
+        """
+        events = ''
+        for event in self.events:
+            events += Template(card).safe_substitute(title=event.title)
+        result = Template(container).safe_substitute(number=str(self.number()), events=events)
+        return result

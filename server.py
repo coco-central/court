@@ -10,22 +10,22 @@ from starlette.templating import Jinja2Templates
 from uvicorn import run
 
 from main.codemao import login
-from main.core import Court, Event, Vote, Ballot
+from main.core import Court, Event
 
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount('/static', StaticFiles(directory='static'), name='static')
 
 tokens = {}
 
 court = Court()
-court.events.append(Event("Test", time.time(), 'None'))
+court.events.append(Event('Test', time.time(), 'None'))
 
 template = Jinja2Templates(directory='static')
 
 
 @app.get('/')
 async def root():
-    file = open("static/index.html", 'r', encoding='utf-8')
+    file = open('static/index.html', 'r', encoding='utf-8')
     text = file.read()
     file.close()
     return HTMLResponse(text)
@@ -33,7 +33,7 @@ async def root():
 
 @app.get('/token/')
 async def get_token(username: str, password: str):
-    bcm = str(login(username, password))
+    bcm = login(username, password)
     if bcm is not None and bcm not in tokens.keys():
         tokens[bcm] = ''.join(random.sample(string.ascii_letters + string.digits, 16))
         data = {'result': 'success'}
@@ -54,18 +54,11 @@ async def post_login(request: Request, identity: str = Form(...), token: str = F
 
     def yes():
         print('yes')
-        context = {
-            'request': request,
-            'number': court.number()
-        }
-        return template.TemplateResponse(name='hall.html', context=context)
+        return HTMLResponse(court.html())
 
     def no():
         print('no')
-        file = open("static/error.html", 'r', encoding='utf-8')
-        text = file.read()
-        file.close()
-        return HTMLResponse(text)
+        return HTMLResponse('failed')
 
     if str(identity) in tokens.keys():
         if tokens[str(identity)] == token:
@@ -77,4 +70,4 @@ async def post_login(request: Request, identity: str = Form(...), token: str = F
 
 
 if __name__ == '__main__' and system().lower() != 'linux':
-    run(app, host='127.0.0.1', port=8000, debug=True)
+    run(app, host='127.0.0.1', port=8000)
