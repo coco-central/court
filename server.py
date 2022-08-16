@@ -25,6 +25,7 @@ template = Jinja2Templates(directory='static')
 
 @app.get('/')
 async def root():
+    print('get', 'Page', 'index.html')
     file = open('static/index.html', 'r', encoding='utf-8')
     text = file.read()
     file.close()
@@ -33,6 +34,7 @@ async def root():
 
 @app.get('/token/')
 async def get_token(username: str, password: str):
+    print('get', 'string', 'token')
     bcm = login(username, password)
     if bcm is not None and bcm not in tokens.keys():
         tokens[bcm] = ''.join(random.sample(string.ascii_letters + string.digits, 16))
@@ -40,24 +42,26 @@ async def get_token(username: str, password: str):
         response = JSONResponse(content=data)
         response.set_cookie('id', str(bcm))
         response.set_cookie('token', tokens[bcm])
-        print('set', bcm, tokens[bcm])
+        print('···', 'set', bcm, tokens[bcm])
         return response
     else:
         data = {'result': 'failed'}
         response = JSONResponse(content=data)
+        print('···', 'failed')
         return response
 
 
 @app.post('/hall/')
-async def post_login(request: Request, identity: str = Form(...), token: str = Form(...)):
-    print('ask', identity, token)
+async def post_login(identity: str = Form(...), token: str = Form(...)):
+    print('post', 'form', 'login')
+    print('···', 'ask', identity, token)
 
     def yes():
-        print('yes')
+        print('···', '···', 'yes')
         return HTMLResponse(court.html())
 
     def no():
-        print('no')
+        print('···', '···', 'no')
         return HTMLResponse('failed')
 
     if str(identity) in tokens.keys():
@@ -67,6 +71,12 @@ async def post_login(request: Request, identity: str = Form(...), token: str = F
             return no()
     else:
         return no()
+
+
+@app.get('/event/{number}')
+async def get_vote(number: int):
+    print('get', 'page', 'event:', number)
+    return HTMLResponse(court.events[number - 1].html())
 
 
 if __name__ == '__main__' and system().lower() != 'linux':

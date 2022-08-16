@@ -5,6 +5,12 @@ from string import Template
 official_list = []
 central_list = []
 
+minute = 60
+hour = minute * 60
+day = hour * 24
+week = day * 7
+month = day * 30
+
 
 class Ballot:
     def __init__(self, identity: int, value: Optional[bool]):
@@ -147,6 +153,44 @@ class Event:
         self.images: List[str] = []
         self.votes: List[Vote] = []
 
+    def get_time(self) -> str:
+        """
+        返回自然语言时间差异
+        :return: str
+        """
+        now = time.time()
+        diff = int(now) - int(self.time)
+        _month = diff / month
+        _week = diff / week
+        _day = diff / day
+        _hour = diff / hour
+        _minute = diff / minute
+        if diff < 0:
+            return '我在时间之外等你'
+        elif _month >= 1:
+            return str(int(_month)) + '个月前'
+        elif _week >= 1:
+            return str(int(_week)) + '周前'
+        elif _day >= 1:
+            return str(int(_day)) + '天前'
+        elif _hour >= 1:
+            return str(int(_hour)) + '小时前'
+        elif _minute >= 1:
+            return str(int(_minute)) + '分钟前'
+        else:
+            return '刚刚'
+
+    def html(self):
+        container = """
+        <div class="container">
+            <h1 class="main-title">
+                $title
+            </h1>
+            
+        </div>
+        """
+        return Template(container).safe_substitute(title=self.title)
+
 
 class Court:
     def __init__(self):
@@ -172,12 +216,13 @@ class Court:
         </div>
         """
         card = """
-            <a class="events">
+            <a class="events" href="/event/$code">
                 <div class="event-title">$title</div>
+                <div class="event-time">$time</div>
             </a>
         """
-        events = ''
+        i, events = 0, ''
         for event in self.events:
-            events += Template(card).safe_substitute(title=event.title)
-        result = Template(container).safe_substitute(number=str(self.number()), events=events)
-        return result
+            i += 1
+            events += Template(card).safe_substitute(code=i, title=event.title, time=event.get_time())
+        return Template(container).safe_substitute(number=str(self.number()), events=events)

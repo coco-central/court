@@ -46,6 +46,15 @@ login.addEventListener('mouseleave', function (e) {
     }
 })
 
+// 回车键登录
+document.addEventListener('keyup', function (e) {
+    if (e.key === 'Enter') {
+        let button = document.getElementById('submit');
+        button.focus();
+        button.click();
+    }
+})
+
 // 获取Cookie
 function getCookie(objName) {
     const arrStr = document.cookie.split('; ');
@@ -97,6 +106,7 @@ function postLogin() {
                 } else {
                     document.body.innerHTML = request.response;
                 }
+                document.body.style.opacity = '1';
             }
         }
     }

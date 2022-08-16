@@ -13,6 +13,11 @@ body {
     background-color: #ffffff;
     background-image: url('/static/img/background.png');
     background-size: cover;
+    opacity: 0;
+}
+
+a {
+    text-decoration: none;
 }
 
 .login {
@@ -127,7 +132,7 @@ span {
 }
 
 .main-title {
-    font-size: 24px;
+    font-size: 36px;
     font-weight: 400;
     margin-top: 8px;
     margin-left: 4%;
@@ -137,9 +142,10 @@ span {
 
 .events {
     display: block;
+    backdrop-filter: blur(10px);
     background-color: #f0f8ff;
     border-radius: 8px;
-    margin-top: 8px;
+    margin-top: 12px;
     margin-left: 5%;
     width: 90%;
     height: auto;
@@ -149,5 +155,11 @@ span {
     display: inline-block;
     color: #000000;
     font-size: 18px;
-    margin: 10px;
+    margin: 16px;
+}
+
+.event-time {
+    display: inline;
+    margin-left: 12px;
+    color: #80778a;
 }
