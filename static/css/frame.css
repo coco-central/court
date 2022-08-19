@@ -132,12 +132,19 @@ span {
 }
 
 .main-title {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 400;
-    margin-top: 8px;
+    margin-top: 16px;
     margin-left: 4%;
     padding: 4px;
     letter-spacing: 2px;
+}
+
+.main-time {
+    margin-left: 4%;
+    padding-left: 1%;
+    color: #80778a;
+    opacity: 0.8;
 }
 
 .events {
@@ -160,6 +167,7 @@ span {
 
 .event-time {
     display: inline;
-    margin-left: 12px;
+    float: right;
+    margin: 16px;
     color: #80778a;
 }

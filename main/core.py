@@ -1,15 +1,49 @@
 import time
-from typing import Optional, List
 from string import Template
+from typing import Optional, List
 
 official_list = []
 central_list = []
 
-minute = 60
-hour = minute * 60
-day = hour * 24
-week = day * 7
-month = day * 30
+a_minute = 60
+a_hour = a_minute * 60
+a_day = a_hour * 24
+a_week = a_day * 7
+a_month = a_day * 30
+
+
+def template_html() -> str:
+    """
+    返回模板HTML内容
+    :return: HTML内容
+    """
+    file = open('static/index.html', 'r', encoding='utf-8')
+    text = file.read()
+    file.close()
+    return text
+
+
+def login_html() -> str:
+    """
+    返回登录HTML内容
+    :return: HTML内容
+    """
+    login = """
+    <div class="login">
+        <h1 class="central-title">CoCo 众裁中心</h1>
+        <form class="login-form">
+            <label for="username"></label>
+            <input name="username" id="username" placeholder="账号">
+            <label for="password"></label>
+            <input name="password" type="password" id="password" placeholder="密码">
+        </form>
+        <button id="submit" onclick="getToken()">登录</button>
+        <div class="container"></div>
+        <script src="/static/js/login.js"></script>
+        <script src="/static/js/connect.js"></script>
+    </div>
+    """
+    return Template(template_html()).safe_substitute(content=login)
 
 
 class Ballot:
@@ -160,36 +194,43 @@ class Event:
         """
         now = time.time()
         diff = int(now) - int(self.time)
-        _month = diff / month
-        _week = diff / week
-        _day = diff / day
-        _hour = diff / hour
-        _minute = diff / minute
+        month = diff / a_month
+        week = diff / a_week
+        day = diff / a_day
+        hour = diff / a_hour
+        minute = diff / a_minute
         if diff < 0:
             return '我在时间之外等你'
-        elif _month >= 1:
-            return str(int(_month)) + '个月前'
-        elif _week >= 1:
-            return str(int(_week)) + '周前'
-        elif _day >= 1:
-            return str(int(_day)) + '天前'
-        elif _hour >= 1:
-            return str(int(_hour)) + '小时前'
-        elif _minute >= 1:
-            return str(int(_minute)) + '分钟前'
+        elif month >= 1:
+            return str(int(month)) + '个月前'
+        elif week >= 1:
+            return str(int(week)) + '周前'
+        elif day >= 1:
+            return str(int(day)) + '天前'
+        elif hour >= 1:
+            return str(int(hour)) + '小时前'
+        elif minute >= 1:
+            return str(int(minute)) + '分钟前'
         else:
             return '刚刚'
 
     def html(self):
+        html_text = template_html()
         container = """
         <div class="container">
             <h1 class="main-title">
                 $title
             </h1>
-            
+            <div class="main-time">
+                $time
+            </div>
         </div>
+        <script src="/static/js/automatic.js"></script>
+        <script src="/static/js/connect.js"></script>
         """
-        return Template(container).safe_substitute(title=self.title)
+        text = Template(html_text).safe_substitute(content=container)
+        time_text = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(self.time))
+        return Template(text).safe_substitute(title=self.title, time=time_text)
 
 
 class Court:
@@ -214,9 +255,10 @@ class Court:
             </h1>
             $events
         </div>
+        <script src="/static/js/automatic.js"></script>
         """
         card = """
-            <a class="events" href="/event/$code">
+            <a class="events" href="/$code">
                 <div class="event-title">$title</div>
                 <div class="event-time">$time</div>
             </a>
