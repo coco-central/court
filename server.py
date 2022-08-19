@@ -75,5 +75,5 @@ async def get_vote(number: int):
     return HTMLResponse(court.events[number - 1].html())
 
 
-if __name__ == '__main__' and system().lower() != 'linux':
+if __name__ == '__main__':
     run(app, host='127.0.0.1', port=8000)
