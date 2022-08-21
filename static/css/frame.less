@@ -1,0 +1,173 @@
+@purple: #7820f3;
+@grey: #80778a;
+@mica: #ffffff66;
+
+.inner-center() {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.self-center() {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.z-down() {
+  z-index: -1;
+}
+
+.z-up() {
+  z-index: 1;
+}
+
+* {
+  color: @purple;
+  margin: 0;
+  padding: 0;
+}
+
+::selection {
+
+}
+
+body {
+  .inner-center();
+  justify-content: normal;
+}
+
+.back {
+  .z-down();
+  .inner-center();
+  position: fixed;
+  width: 100%;
+  height: 100%;
+
+  background: url("../img/background.png");
+  background-size: cover;
+}
+
+.login {
+  .self-center();
+  .inner-center();
+  position: absolute;
+  width: 300px;
+  height: 400px;
+
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: @mica;
+  backdrop-filter: blur(25px);
+
+  > .central-title {
+    .z-up();
+    margin-bottom: 30px;
+
+    font-size: 28px;
+    font-weight: 400;
+  }
+
+  > .login-form {
+    .z-up();
+    .inner-center();
+    position: relative;
+    width: 200px;
+    height: 100px;
+
+    > input {
+      width: 200px;
+      height: 40px;
+      margin: 4px;
+      padding: 2px;
+
+      background-color: transparent !important;
+      border: 0 solid @mica;
+      border-bottom: 2px solid @purple;
+
+      transition: background-color 50000s ease-in-out 0s;
+      -webkit-text-fill-color: black;
+    }
+
+  }
+
+  > button {
+    .z-up();
+    width: 120px;
+    height: 36px;
+    margin-top: 40px;
+
+    cursor: pointer;
+    background-color: transparent !important;
+    border: 2px solid @purple;
+    border-radius: 18px;
+  }
+}
+
+.container {
+  position: absolute;
+  width: 100%;
+  max-width: 500px;
+  height: 100%;
+}
+
+.event-card {
+  display: block;
+  margin: 12px 5% 0 5%;
+  width: 90%;
+
+  background-color: @mica;
+  backdrop-filter: blur(25px);
+  border-radius: 8px;
+}
+
+.event-title {
+  display: inline-block;
+  margin: 16px;
+
+  color: black;
+  font-size: 18px;
+}
+
+.event-time {
+    display: inline-block;
+    float: right;
+    margin: 16px;
+
+    color: grey;
+}
+
+.main-title {
+  margin: 16px 4% 0 4%;
+  padding: 4px;
+
+  font-size: 32px;
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+
+.main-time {
+  margin: 0 4% 0 4%;
+  padding-left: 4px;
+
+  font-size: 16px;
+  color: @grey;
+  opacity: 0.8;
+}
+
+.main-content {
+  margin: 2% 4% 0 4%;
+  padding: 4px;
+
+  font-size: 16px;
+  color: black;
+}
+
+.main-image {
+  margin: 16px 10%;
+  width: 80%;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+}

@@ -12,38 +12,20 @@ a_week = a_day * 7
 a_month = a_day * 30
 
 
-def template_html() -> str:
+def template(name: str) -> str:
     """
-    返回模板HTML内容
-    :return: HTML内容
+    读取模板文件
+    :param name: 模板名
+    :return: 模板
     """
-    file = open('static/index.html', 'r', encoding='utf-8')
+    file = open('static/template/' + name + '.html', 'r', encoding='utf-8')
     text = file.read()
     file.close()
     return text
 
 
 def login_html() -> str:
-    """
-    返回登录HTML内容
-    :return: HTML内容
-    """
-    login = """
-    <div class="login">
-        <h1 class="central-title">CoCo 众裁中心</h1>
-        <form class="login-form">
-            <label for="username"></label>
-            <input name="username" id="username" placeholder="账号">
-            <label for="password"></label>
-            <input name="password" type="password" id="password" placeholder="密码">
-        </form>
-        <button id="submit" onclick="getToken()">登录</button>
-        <div class="container"></div>
-        <script src="/static/js/login.js"></script>
-        <script src="/static/js/connect.js"></script>
-    </div>
-    """
-    return Template(template_html()).safe_substitute(content=login)
+    return Template(template('index')).safe_substitute(content=template('login'))
 
 
 class Ballot:
@@ -215,35 +197,13 @@ class Event:
             return '刚刚'
 
     def html(self):
-        html_text = template_html()
-        card_template = """
-        <image class="main-image" src="$base64"/>
-        """
-        container_template = """
-        <div class="container">
-            <h1 class="main-title">
-                $title
-            </h1>
-            <div class="main-time">
-                $time
-            </div>
-            <div class="main-content">
-                $content
-            </div>
-            <div class="main-images">
-                $images
-            </div>
-        </div>
-        <script src="/static/js/automatic.js"></script>
-        <script src="/static/js/connect.js"></script>
-        """
         images_html = ''
         for image in self.images:
-            images_html += Template(card_template).safe_substitute(
+            images_html += Template(template('image')).safe_substitute(
                 base64=image
             )
-        temporary_html = Template(html_text).safe_substitute(
-            content=container_template
+        temporary_html = Template(template('index')).safe_substitute(
+            content=template('event')
         )
         time_text = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(self.time))
         return Template(temporary_html).safe_substitute(
@@ -269,29 +229,14 @@ class Court:
         return len(self.events)
 
     def html(self) -> str:
-        card_template = """
-            <a class="events" href="/$code">
-                <div class="event-title">$title</div>
-                <div class="event-time">$time</div>
-            </a>
-        """
-        container_template = """
-        <div class="container">
-            <h1 class="main-title">
-                中控台众裁投票 ($number)
-            </h1>
-            $events
-        </div>
-        <script src="/static/js/automatic.js"></script>
-        """
         events_html = ''
         for i in range(len(self.events)):
-            events_html += Template(card_template).safe_substitute(
+            events_html += Template(template('item')).safe_substitute(
                 code=i,
                 title=self.events[i].title,
                 time=self.events[i].get_time()
             )
-        return Template(container_template).safe_substitute(
+        return Template(template('hall')).safe_substitute(
             number=str(self.number()),
             events=events_html
         )
