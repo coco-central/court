@@ -10,6 +10,7 @@ from uvicorn import run
 
 from main.codemao import login
 from main.core import *
+from main.image_test import *
 
 app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
@@ -17,8 +18,9 @@ app.mount('/static', StaticFiles(directory='static'), name='static')
 tokens = {}
 
 court = Court()
-court.events.append(Event('Test', time.time(), 'None'))
-
+court.events.append(Event('Test', time.time(), '这仅仅是一条测试'))
+court.events[-1].images.append(img1)
+court.events[-1].images.append(img2)
 template = Jinja2Templates(directory='static')
 
 

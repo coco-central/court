@@ -216,7 +216,10 @@ class Event:
 
     def html(self):
         html_text = template_html()
-        container = """
+        card_template = """
+        <image class="main-image" src="$base64"/>
+        """
+        container_template = """
         <div class="container">
             <h1 class="main-title">
                 $title
@@ -224,13 +227,31 @@ class Event:
             <div class="main-time">
                 $time
             </div>
+            <div class="main-content">
+                $content
+            </div>
+            <div class="main-images">
+                $images
+            </div>
         </div>
         <script src="/static/js/automatic.js"></script>
         <script src="/static/js/connect.js"></script>
         """
-        text = Template(html_text).safe_substitute(content=container)
+        images_html = ''
+        for image in self.images:
+            images_html += Template(card_template).safe_substitute(
+                base64=image
+            )
+        temporary_html = Template(html_text).safe_substitute(
+            content=container_template
+        )
         time_text = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(self.time))
-        return Template(text).safe_substitute(title=self.title, time=time_text)
+        return Template(temporary_html).safe_substitute(
+            title=self.title,
+            time=time_text,
+            content=self.content,
+            images=images_html
+        )
 
 
 class Court:
@@ -248,7 +269,13 @@ class Court:
         return len(self.events)
 
     def html(self) -> str:
-        container = """
+        card_template = """
+            <a class="events" href="/$code">
+                <div class="event-title">$title</div>
+                <div class="event-time">$time</div>
+            </a>
+        """
+        container_template = """
         <div class="container">
             <h1 class="main-title">
                 中控台众裁投票 ($number)
@@ -257,14 +284,14 @@ class Court:
         </div>
         <script src="/static/js/automatic.js"></script>
         """
-        card = """
-            <a class="events" href="/$code">
-                <div class="event-title">$title</div>
-                <div class="event-time">$time</div>
-            </a>
-        """
-        i, events = 0, ''
-        for event in self.events:
-            i += 1
-            events += Template(card).safe_substitute(code=i, title=event.title, time=event.get_time())
-        return Template(container).safe_substitute(number=str(self.number()), events=events)
+        events_html = ''
+        for i in range(len(self.events)):
+            events_html += Template(card_template).safe_substitute(
+                code=i,
+                title=self.events[i].title,
+                time=self.events[i].get_time()
+            )
+        return Template(container_template).safe_substitute(
+            number=str(self.number()),
+            events=events_html
+        )

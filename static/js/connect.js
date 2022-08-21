@@ -48,7 +48,12 @@ function postLogin() {
                     delCookie();
                     window.location.href = "/";
                 } else {
-                    reset(request.response);
+                    try {
+                        reset(request.response);
+                        resize();
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }
                 document.body.style.opacity = '1';
             }
