@@ -196,11 +196,15 @@ class Event:
         else:
             return '刚刚'
 
-    def html(self):
-        images_html = ''
+    def html(self) -> str:
+        images_html, votes_html = '', ''
         for image in self.images:
             images_html += Template(template('image')).safe_substitute(
                 base64=image
+            )
+        for vote in self.votes:
+            votes_html += Template(template('vote')).safe_substitute(
+                name=vote.object
             )
         temporary_html = Template(template('index')).safe_substitute(
             content=template('event')
@@ -210,7 +214,8 @@ class Event:
             title=self.title,
             time=time_text,
             content=self.content,
-            images=images_html
+            images=images_html,
+            votes=votes_html
         )
 
 
@@ -232,7 +237,7 @@ class Court:
         events_html = ''
         for i in range(len(self.events)):
             events_html += Template(template('item')).safe_substitute(
-                code=i,
+                code=i + 1,
                 title=self.events[i].title,
                 time=self.events[i].get_time()
             )

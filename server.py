@@ -1,6 +1,6 @@
 import random
 import string
-from platform import system
+import time
 
 from fastapi import FastAPI, Form
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -21,6 +21,9 @@ court = Court()
 court.events.append(Event('Test', time.time(), '这仅仅是一条测试'))
 court.events[-1].images.append(img1)
 court.events[-1].images.append(img2)
+court.events[-1].images.append(img3)
+court.events[-1].votes.append(Vote('简与不简',time.time()))
+court.events[-1].votes.append(Vote('还是简与不简',time.time()))
 template = Jinja2Templates(directory='static')
 
 
@@ -34,8 +37,9 @@ async def root():
 async def get_token(username: str, password: str):
     print('get', 'string', 'token')
     bcm = login(username, password)
-    if bcm is not None and bcm not in tokens.keys():
-        tokens[bcm] = ''.join(random.sample(string.ascii_letters + string.digits, 16))
+    if bcm is not None:
+        if bcm not in tokens.keys():
+            tokens[bcm] = str().join(random.sample(string.ascii_letters + string.digits, 16))
         data = {'result': 'success'}
         response = JSONResponse(content=data)
         response.set_cookie('id', str(bcm))
@@ -73,7 +77,7 @@ async def post_login(identity: str = Form(...), token: str = Form(...)):
 
 @app.get('/{number}')
 async def get_vote(number: int):
-    print('get', 'page', 'event:', number)
+    print('get', 'page', 'event:', number - 1)
     return HTMLResponse(court.events[number - 1].html())
 
 

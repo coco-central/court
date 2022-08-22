@@ -3,6 +3,9 @@
   margin: 0;
   padding: 0;
 }
+::-webkit-scrollbar {
+  display: none;
+}
 body {
   display: flex;
   flex-direction: column;
@@ -79,27 +82,9 @@ body {
   position: absolute;
   width: 100%;
   max-width: 500px;
-  height: 100%;
-}
-.event-card {
-  display: block;
-  margin: 12px 5% 0 5%;
-  width: 90%;
+  min-height: 100%;
   background-color: #ffffff66;
   backdrop-filter: blur(25px);
-  border-radius: 8px;
-}
-.event-title {
-  display: inline-block;
-  margin: 16px;
-  color: black;
-  font-size: 18px;
-}
-.event-time {
-  display: inline-block;
-  float: right;
-  margin: 16px;
-  color: grey;
 }
 .main-title {
   margin: 16px 4% 0 4%;
@@ -112,19 +97,41 @@ body {
   margin: 0 4% 0 4%;
   padding-left: 4px;
   font-size: 16px;
-  color: #80778a;
+  color: grey;
   opacity: 0.8;
 }
 .main-content {
-  margin: 2% 4% 0 4%;
+  margin: 2% 4% 2% 4%;
   padding: 4px;
   font-size: 16px;
   color: black;
 }
-.main-image {
-  margin: 16px 10%;
+.main-images > .main-image {
+  margin: 2% 10% 0 10%;
   width: 80%;
+  height: 40%;
+  background: transparent;
   border: 1px solid transparent;
   border-radius: 10px;
+}
+.event-card {
+  display: block;
+  margin: 12px 5% 0 5%;
+  width: 90%;
+  background-color: #ffffff66;
+  backdrop-filter: blur(25px);
+  border-radius: 8px;
+}
+.event-card > .event-title {
+  display: inline-block;
+  margin: 16px;
+  color: black;
+  font-size: 18px;
+}
+.event-card > .event-time {
+  display: inline-block;
+  float: right;
+  margin: 16px;
+  color: grey;
 }
 /*# sourceMappingURL=frame.css.map */
