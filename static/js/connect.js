@@ -69,3 +69,16 @@ if (document.cookie !== "") {
 } else {
     document.body.style.opacity = '1';
 }
+
+function getDecision(event, name, value) {
+    const request = new XMLHttpRequest();
+    request.open('GET', '/vote/?' + 'event=' + event + '&' + 'name=' + name + '&' + 'value=' + value, true);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (request.status === 200 || request.status === 304) {
+                location.reload();
+            }
+        }
+    }
+    request.send();
+}

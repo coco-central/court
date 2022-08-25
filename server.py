@@ -1,10 +1,10 @@
 import random
 import string
-import time
 
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Cookie
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 from uvicorn import run
 
@@ -16,25 +16,30 @@ app = FastAPI()
 app.mount('/static', StaticFiles(directory='static'), name='static')
 
 tokens = {}
+block_list = []
 
 court = Court()
-court.events.append(Event('Test', time.time(), '这仅仅是一条测试'))
+court.events.append(Event('Test', time.time(), '这仅仅是一条测试', len(court.events)))
 court.events[-1].images.append(img1)
 court.events[-1].images.append(img2)
 court.events[-1].images.append(img3)
-court.events[-1].votes.append(Vote('简与不简',time.time()))
-court.events[-1].votes.append(Vote('还是简与不简',time.time()))
+court.events[-1].votes.append(Vote('简与不简', time.time()))
+court.events[-1].votes.append(Vote('还是简与不简', time.time()))
 template = Jinja2Templates(directory='static')
 
 
 @app.get('/')
-async def root():
+async def root(request: Request):
+    if request.client.host in block_list:
+        return 404
     print('get', 'Page', 'index.html')
     return HTMLResponse(login_html())
 
 
 @app.get('/token/')
-async def get_token(username: str, password: str):
+async def get_token(request: Request, username: str, password: str):
+    if request.client.host in block_list:
+        return 404
     print('get', 'string', 'token')
     bcm = login(username, password)
     if bcm is not None:
@@ -54,7 +59,9 @@ async def get_token(username: str, password: str):
 
 
 @app.post('/hall/')
-async def post_login(identity: str = Form(...), token: str = Form(...)):
+async def post_login(request: Request, identity: str = Form(...), token: str = Form(...)):
+    if request.client.host in block_list:
+        return 404
     print('post', 'form', 'login')
     print('···', 'ask', identity, token)
 
@@ -76,9 +83,34 @@ async def post_login(identity: str = Form(...), token: str = Form(...)):
 
 
 @app.get('/{number}')
-async def get_vote(number: int):
+async def get_vote(request: Request, id=Cookie(None), number: int = 1):
+    if request.client.host in block_list:
+        return 404
     print('get', 'page', 'event:', number - 1)
-    return HTMLResponse(court.events[number - 1].html())
+    return HTMLResponse(court.events[number - 1].html(id))
+
+
+@app.get('/vote/')
+async def get_result(request: Request, id=Cookie(None), event: str = '', name: str = '', value: str = ''):
+    if request.client.host in block_list:
+        return 404
+
+    print('get', 'vote', event, name)
+    if id in tokens.keys():
+        e = court.events[int(event)]
+        c = [i.object for i in e.votes].index(name)
+
+        def val(value: str) -> Optional[bool]:
+            if value == 'penalize':
+                return True
+            elif value == 'waiver':
+                return None
+            else:
+                return False
+
+        e.votes[c].ballots.append(Ballot(id, val(value)))
+    else:
+        block_list.append(request.client.host)
 
 
 if __name__ == '__main__':

@@ -29,7 +29,7 @@ def login_html() -> str:
 
 
 class Ballot:
-    def __init__(self, identity: int, value: Optional[bool]):
+    def __init__(self, identity: str, value: Optional[bool]):
         """
         票
         :param identity: 投票者id
@@ -131,6 +131,7 @@ class Vote:
                     central[0] + common[0],
                     central[1] + common[1],
                     central[2] + common[2],
+                    None
                 ]
                 merge[3] = self.__judge(central[0], central[2])
                 return {
@@ -156,7 +157,7 @@ class Vote:
 
 
 class Event:
-    def __init__(self, title: str, time_stamp: float, content: str):
+    def __init__(self, title: str, time_stamp: float, content: str, order: int):
         """
         发生的事件
         :param title: 事件名称
@@ -166,6 +167,7 @@ class Event:
         self.title = title
         self.time = time_stamp
         self.content = content
+        self.order = order
         self.images: List[str] = []
         self.votes: List[Vote] = []
 
@@ -196,15 +198,34 @@ class Event:
         else:
             return '刚刚'
 
-    def html(self) -> str:
+    def html(self, identity: str) -> str:
         images_html, votes_html = '', ''
         for image in self.images:
             images_html += Template(template('image')).safe_substitute(
                 base64=image
             )
+
         for vote in self.votes:
+            if vote.result()['state'] == 'final' or identity in [ballot.identity for ballot in vote.ballots]:
+                def result():
+                    data = vote.result()['data']
+                    if data[0] == data[2] == 0:
+                        return '50%'
+                    else:
+                        return (data[0] * 100) / (data[0] + data[2]) + '%'
+
+                vote_interaction_html = Template(template('vote_data')).safe_substitute(
+                    name=vote.object,
+                    result=result()
+                )
+            else:
+                vote_interaction_html = Template(template('vote_button')).safe_substitute(
+                    event=self.order,
+                    name=vote.object
+                )
             votes_html += Template(template('vote')).safe_substitute(
-                name=vote.object
+                name=vote.object,
+                interaction=vote_interaction_html
             )
         temporary_html = Template(template('index')).safe_substitute(
             content=template('event')
