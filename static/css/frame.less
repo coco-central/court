@@ -28,10 +28,6 @@
   padding: 0;
 }
 
-::selection {
-
-}
-
 ::-webkit-scrollbar {
   display: none;
 }
@@ -97,7 +93,6 @@ button {
       transition: background-color 50000s ease-in-out 0s;
       -webkit-text-fill-color: black;
     }
-
   }
 
   > button {
@@ -160,16 +155,18 @@ button {
 }
 
 .event-card {
-  display: block;
+  display: flex;
   margin: 12px 5% 0 5%;
   width: 90%;
 
   background-color: #ffffff66;
   backdrop-filter: blur(25px);
   border-radius: 8px;
+  align-items: center;
+  justify-content: space-between;
 
   .event-right-bar() {
-    display: inline-block;
+    display: block;
     float: right;
   }
 
@@ -190,7 +187,7 @@ button {
     line-height: 18px;
   }
 
-  > .event-button {
+  > div > .event-button {
     .event-right-bar();
     margin: 16px 8px;
 
@@ -200,10 +197,11 @@ button {
   }
 
   > .event-data {
-    display: inline-block;
+    display: block;
     float: right;
 
     width: 30%;
+    margin: 16px;
 
     > .data-bar {
       margin-right: 8px;

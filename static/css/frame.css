@@ -119,12 +119,14 @@ button {
   border-radius: 10px;
 }
 .event-card {
-  display: block;
+  display: flex;
   margin: 12px 5% 0 5%;
   width: 90%;
   background-color: #ffffff66;
   backdrop-filter: blur(25px);
   border-radius: 8px;
+  align-items: center;
+  justify-content: space-between;
 }
 .event-card > .event-title {
   display: inline-block;
@@ -134,14 +136,14 @@ button {
   line-height: 18px;
 }
 .event-card > .event-time {
-  display: inline-block;
+  display: block;
   float: right;
   margin: 16px;
   color: grey;
   line-height: 18px;
 }
-.event-card > .event-button {
-  display: inline-block;
+.event-card > div > .event-button {
+  display: block;
   float: right;
   margin: 16px 8px;
   color: black;
@@ -149,9 +151,10 @@ button {
   line-height: 18px;
 }
 .event-card > .event-data {
-  display: inline-block;
+  display: block;
   float: right;
   width: 30%;
+  margin: 16px;
 }
 .event-card > .event-data > .data-bar {
   margin-right: 8px;
