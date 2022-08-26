@@ -3,7 +3,7 @@ from string import Template
 from typing import Optional, List
 
 official_list = []
-central_list = []
+central_list = [15095757]
 
 a_minute = 60
 a_hour = a_minute * 60
@@ -26,6 +26,12 @@ def template(name: str) -> str:
 
 def login_html() -> str:
     return Template(template('index')).safe_substitute(content=template('login'))
+
+
+def admin_html() -> str:
+    return Template(template('index')).safe_substitute(
+        content=template('admin')
+    )
 
 
 class Ballot:
@@ -208,8 +214,10 @@ class Event:
 
         for vote in self.votes:
             if vote.result()['state'] == 'final' or identity in [ballot.identity for ballot in vote.ballots]:
-                def result():
-                    data = vote.result()['data']
+                result = vote.result()
+
+                def calculator():
+                    data = result['data']
                     if data[0] == data[2] == 0:
                         return '50%'
                     else:
@@ -217,10 +225,10 @@ class Event:
 
                 vote_interaction_html = Template(template('vote_data')).safe_substitute(
                     name=vote.object,
-                    result=result(),
-                    source=vote.result()['source'],
-                    state=vote.result()['state'],
-                    data=vote.result()['data']
+                    result=calculator(),
+                    source=result['source'],
+                    state=result['state'],
+                    data=result['data']
                 )
             else:
                 vote_interaction_html = Template(template('vote_button')).safe_substitute(

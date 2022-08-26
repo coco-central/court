@@ -87,7 +87,10 @@ async def get_vote(request: Request, id=Cookie(None), number: int = 1):
     if request.client.host in block_list:
         return 404
     print('get', 'page', 'event:', number - 1)
-    return HTMLResponse(court.events[number - 1].html(id))
+    if number == 0:
+        return HTMLResponse(admin_html())
+    else:
+        return HTMLResponse(court.events[number - 1].html(id))
 
 
 @app.get('/vote/')
@@ -99,7 +102,10 @@ async def get_result(request: Request, id=Cookie(None), event: str = '', name: s
     if id in tokens.keys():
         e = court.events[int(event)]
         l = [i.object for i in e.votes]
-        c = l.index(name)
+        try:
+            c = l.index(name)
+        except ValueError:
+            block_list.append(request.client.host)
 
         def val(value: str) -> Optional[bool]:
             if value == 'penalize':
@@ -113,6 +119,14 @@ async def get_result(request: Request, id=Cookie(None), event: str = '', name: s
         print([i.value for i in e.votes[c].ballots])
     else:
         block_list.append(request.client.host)
+
+
+@app.get('/admin/')
+async def get_admin(id=Cookie(None)):
+    if int(id) in official_list or int(id) in central_list:
+        return HTMLResponse(admin_html())
+    else:
+        return 404
 
 
 if __name__ == '__main__':
