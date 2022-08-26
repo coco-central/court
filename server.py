@@ -98,7 +98,8 @@ async def get_result(request: Request, id=Cookie(None), event: str = '', name: s
     print('get', 'vote', event, name)
     if id in tokens.keys():
         e = court.events[int(event)]
-        c = [i.object for i in e.votes].index(name)
+        l = [i.object for i in e.votes]
+        c = l.index(name)
 
         def val(value: str) -> Optional[bool]:
             if value == 'penalize':
@@ -109,6 +110,7 @@ async def get_result(request: Request, id=Cookie(None), event: str = '', name: s
                 return False
 
         e.votes[c].ballots.append(Ballot(id, val(value)))
+        print([i.value for i in e.votes[c].ballots])
     else:
         block_list.append(request.client.host)
 

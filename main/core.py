@@ -110,6 +110,8 @@ class Vote:
         返回总的投票结果
         :return: 一个字典，包含数据来源(source)，投票阶段(state)，投票数据(data)
         """
+        self.sort()
+
         official = self.__value(0)
         central = self.__value(1)
         common = self.__value(2)
@@ -125,7 +127,6 @@ class Vote:
                 state = 'final'
             else:
                 state = 'voting'
-
             if central[3] == common[3]:
                 merge = [
                     central[0] + common[0],
@@ -212,11 +213,14 @@ class Event:
                     if data[0] == data[2] == 0:
                         return '50%'
                     else:
-                        return (data[0] * 100) / (data[0] + data[2]) + '%'
+                        return str((data[0] * 100) / (data[0] + data[2])) + '%'
 
                 vote_interaction_html = Template(template('vote_data')).safe_substitute(
                     name=vote.object,
-                    result=result()
+                    result=result(),
+                    source=vote.result()['source'],
+                    state=vote.result()['state'],
+                    data=vote.result()['data']
                 )
             else:
                 vote_interaction_html = Template(template('vote_button')).safe_substitute(
