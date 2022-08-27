@@ -18,15 +18,11 @@ def login(username: str, password: str) -> Optional[str]:
     :return: 如果成功返回id，失败返回 None
     """
 
-    value = requests.post(url="https://api.codemao.cn/tiger/v3/web/accounts/login",
-                          data=json.dumps({
-                              'identity': username,
-                              'password': password,
-                              'pid': '7KeVbBdw'
-                          }),
+    value = requests.get(url="https://api.xyfish.cn/api/coco_login/api.php?"+'user='+username+'&pwd='+password,
                           headers=headers).text
-    if 'auth' in json.loads(value).keys():
-        return str(json.loads(value)['user_info']['id'])
+    print(value)
+    if 'id' in json.loads(value).keys():
+        return str(json.loads(value)['id'])
 
     else:
         return None

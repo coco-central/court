@@ -72,6 +72,7 @@ button {
   background-color: transparent !important;
   border: 0 solid #ffffff66;
   border-bottom: 2px solid #7820f3;
+  outline: none;
   transition: background-color 50000s ease-in-out 0s;
   -webkit-text-fill-color: black;
 }
