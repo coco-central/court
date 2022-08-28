@@ -1,5 +1,6 @@
 import random
 import string
+from platform import system
 
 from fastapi import FastAPI, Form, Cookie
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -128,4 +129,4 @@ async def get_admin(id=Cookie(None)):
 
 
 if __name__ == '__main__':
-    run(app, host='127.0.0.1', port=8000)
+    run(app, host=('127.0.0.1', '0.0.0.0')[system().lower() == 'linux'], port=8000)
