@@ -30,8 +30,6 @@ template = Jinja2Templates(directory='static')
 
 @app.get('/')
 async def root(request: Request):
-    if request.client.host in block_list:
-        return 404
     print('get', 'Page', 'index.html')
     return HTMLResponse(login_html())
 

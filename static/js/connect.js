@@ -24,7 +24,7 @@ function getToken() {
     let username = document.getElementById('username').value;
     let password = document.getElementById('password').value;
     const request = new XMLHttpRequest();
-    request.open('GET', '/token/?' + 'username=' + username + '&' + 'password=' + password, true);
+    request.open('GET', '/token/?' + 'username=' + username + '&' + 'password=' + encodeURIComponent(password), true);
     request.onreadystatechange = function () {
         if (request.readyState === 4) {
             if (request.status === 200 || request.status === 304) {
@@ -63,13 +63,7 @@ function postLogin() {
     request.send('identity=' + getCookie('id') + '&token=' + getCookie('token'));
 }
 
-// 记住登录状态，自动登录
-if (document.cookie !== "") {
-    postLogin();
-} else {
-    document.body.style.opacity = '1';
-}
-
+// 发送投票数据
 function getDecision(event, name, value) {
     const request = new XMLHttpRequest();
     request.open('GET', '/vote/?' + 'event=' + event + '&' + 'name=' + name + '&' + 'value=' + value, true);

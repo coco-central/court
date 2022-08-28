@@ -18,3 +18,11 @@
     <br>
 </div>
 <script src="/static/js/connect.js"></script>
+<script>
+    // 记住登录状态，自动登录
+    if (document.cookie !== "") {
+        postLogin();
+    } else {
+        window.location.href = "/";
+    }
+</script>
