@@ -70,11 +70,14 @@ button {
   margin: 4px;
   padding: 2px;
   background-color: transparent !important;
-  border: 0 solid #ffffff66;
-  border-bottom: 2px solid #7820f3;
+  border: 0 none;
+  border-bottom-width: 2px;
   outline: none;
   transition: background-color 50000s ease-in-out 0s;
   -webkit-text-fill-color: black;
+}
+.login > .login-form > input :focus {
+  outline: none;
 }
 .login > button {
   z-index: 1;

@@ -91,12 +91,16 @@ button {
       padding: 2px;
 
       background-color: transparent !important;
-      border: 0 solid @mica;
-      border-bottom: 2px solid @purple;
-      outline:none;
+      border: 0 none;
+      border-bottom-width: 2px;
+      outline: none;
 
       transition: background-color 50000s ease-in-out 0s;
       -webkit-text-fill-color: black;
+    }
+
+    > input :focus {
+      outline: none;
     }
   }
 
